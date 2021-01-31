@@ -1,0 +1,72 @@
+DROP TABLE Customer CASCADE CONSTRAINTS;
+DROP TABLE Employee CASCADE CONSTRAINTS;
+DROP  TABLE ORDERTBL CASCADE CONSTRAINTS;
+DROP  TABLE product CASCADE CONSTRAINTS;
+DROP  TABLE ordline CASCADE CONSTRAINTS;
+
+CREATE TABLE Customer (
+Custno VARCHAR2(10),
+CustFirstName VARCHAR2(30) NOT NULL ,
+CustLastName VARCHAR2(30) NOT NULL,
+CustStreet VARCHAR2(50),
+Custcity VARCHAR2(30), 
+CustState CHAR(2),
+CustZip VARCHAR2(15),
+CustBal NUMBER(8,2),
+CONSTRAINT customer_pk PRIMARY KEY (CustNo)
+);
+
+CREATE TABLE Employee (
+EmpNo VARCHAR2(10),
+EmpFirstName VARCHAR2(100) NOT NULL,
+EmpLastName VARCHAR2(100) NOT NULL,
+EmpPhone VARCHAR2(20),
+EmpEmail VARCHAR2(100) NOT NULL ,
+SupEmpNo      CHAR(8),
+	EmpCommRate   DECIMAL(3,3),
+CONSTRAINT employee_pk PRIMARY KEY (EmpNo),
+CONSTRAINT employee_empmail_unique Unique(empemail)
+);
+
+CREATE TABLE OrderTBL(
+OrdNo VARCHAR2(10),
+OrdDate DATE NOT NULL,
+CustNo VARCHAR2(10) NOT null,
+EmpNo VARCHAR2(10) NOT null,
+OrdName	VARCHAR2(50),
+OrdStreet	VARCHAR2(50),
+OrdCity	VARCHAR2(30),
+OrdState	CHAR(2),
+OrdZip	CHAR(10),
+CONSTRAINT ordertbl_pk PRIMARY KEY (ORDno),
+CONSTRAINT ordertbl_customer_fk FOREIGN KEY(Custno) REFERENCES customer,
+CONSTRAINT ordertbl_employee_fk FOREIGN KEY (empno) REFERENCES employee
+);
+
+CREATE TABLE Product
+( 	ProdNo 	VARCHAR(10),
+  	ProdName	VARCHAR2(50) CONSTRAINT ProdNameRequired NOT NULL,
+	ProdMfg	VARCHAR2(20) CONSTRAINT ProdMfgRequired NOT NULL,
+	ProdQOH	INTEGER DEFAULT 0,
+	ProdPrice	DECIMAL(12,2) DEFAULT 0, 
+ 	ProdNextShipDate	DATE,
+ CONSTRAINT PKProduct PRIMARY KEY (ProdNo)  );
+ 
+CREATE TABLE OrdLine
+(
+OrdNo 	VARCHAR2(10),
+ProdNo	VARCHAR2(10),
+Qty		INTEGER DEFAULT 1,
+CONSTRAINT PKOrdLine PRIMARY KEY (OrdNo, ProdNo), 
+CONSTRAINT FKOrdNo FOREIGN KEY (OrdNo) REFERENCES OrderTbl 
+ON DELETE CASCADE, 
+CONSTRAINT FKProdNo FOREIGN KEY (ProdNo) REFERENCES Product );
+
+
+/*4
+ Customer -> OrderTBL
+ Employee -> OrderTBL
+ 6
+ BOth values are needed, someone sells something to someone
+ */
+
